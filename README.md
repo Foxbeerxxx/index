@@ -21,30 +21,39 @@ WHERE
 ```
 ![1](https://github.com/Foxbeerxxx/index/blob/main/img/img1.png)`
 
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
 
-```
-Поле для вставки кода...
-....
-....
-....
-....
-```
-
-`При необходимости прикрепитe сюда скриншоты
-
-
-
----
 
 ### Задание 2
 
-`Приведите ответ в свободной форме........`
+`Выполните explain analyze следующего запроса:`
+```
+SELECT DISTINCT
+    concat(c.last_name, ' ', c.first_name),
+    SUM(p.amount) OVER (PARTITION BY c.customer_id, f.title)
+FROM
+    payment p
+JOIN
+    rental r ON p.payment_date = r.rental_date
+JOIN
+    customer c ON r.customer_id = c.customer_id
+JOIN
+    inventory i ON r.inventory_id = i.inventory_id
+JOIN
+    film f ON i.film_id = f.film_id
+WHERE
+    DATE(p.payment_date) = '2005-07-30';
+```
 
-1. `Заполните здесь этапы выполнения, если требуется ....`
+1. `Узкие места`
+#
+Использование DATE() в WHERE
+DATE(p.payment_date) = '2005-07-30' является серьезной проблемой производительности. Функция DATE() применяется к каждому значению p.payment_date
+#
+p.payment_date = r.rental_date - Это нелогичный JOIN. Столбцы payment_date и rental_date имеют разное значение. Связь должна быть через корректные столбцы, скорее всего rental_id.
+#
+
+
+
 2. `Заполните здесь этапы выполнения, если требуется ....`
 3. `Заполните здесь этапы выполнения, если требуется ....`
 4. `Заполните здесь этапы выполнения, если требуется ....`
